@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # use this script by passing the database password:
-# db_password='my_password' import_courses.sh yyyy-mm-dd
+# db_password='my_password' extract_packages.sh yyyy-mm-dd
+
 export EDI_BASE_DIR=/Users/ps158/Documents/DataCzar/
 export DECRYPT_DIR=/Volumes/PEGASUS/EdX_Data/
 export DATA_DIR=/Volumes/PEGASUS/EdX_Data_ENC/
@@ -14,7 +15,7 @@ echo "Importing course data from: sample/${DIR}"
 python course-progress.py --course 'MTN101x SWL101x NHI101x HOV101x SSS101x' --directory sample/${DIR} --tables 'auth_user auth_userprofile student_courseenrollment student_courseaccessrole user_id_map student_languageproficiency' -D
 
 ./generate_schemas.sh
-#rm -rvf sample/**
+
 cp -vf newcastlex_research.db ${EDI_BASE_DIR}build-research-db/db
 cp -Rvf model_schemas/sqlite ${EDI_BASE_DIR}build-research-db/model_schemas/
 

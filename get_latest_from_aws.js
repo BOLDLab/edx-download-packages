@@ -1,6 +1,5 @@
 const fs = require('fs');
 const { exec } = require('child_process');
-//const spawn = require('child_process').spawn;
 const path = require('path');
 
 if(!process.env.DATA_DIR) {
@@ -35,9 +34,7 @@ process.argv.forEach((arg, i, a) => {
 });
 
 const run = (error, stdout, sterr) => {
-
   console.log("Processing these files");
-  //console.log(stdout);
 
   if(!fs.existsSync('./buffer.json')) {
       a = stdout.split('\n');
