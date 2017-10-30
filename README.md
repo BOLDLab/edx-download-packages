@@ -17,7 +17,7 @@ chmod +x newcastleX_download_zip.sh
 
 source env/bin/activate
 
-db_password='my_password' extract_packages.sh output_directory_name[e.g. 2017-10-09]
+db_password='my_password' extract_packages.sh output_directory_name[e.g. 2017-10-09|latest|my_data_folder]
 ```
 The command will extract the sqlite schemas for each table to `sample\`.
 

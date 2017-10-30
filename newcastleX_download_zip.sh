@@ -1,6 +1,6 @@
 #!/bin/bash
 
-date=$1
+dir=$1
 ZFILE=$2
 wildcard=($3)
 file=null
@@ -22,17 +22,17 @@ else
     mkdir -p ${DECRYPT_DIR}${file}
 fi
 
-if [ -d sample/${date} ]; then
+if [ -d sample/${dir} ]; then
     echo "Sample folder exists"
 else
-    mkdir -p sample/${date}
+    mkdir -p sample/${dir}
 fi
 
 echo "Extracting tarball"
 tar xzf ${DATA_DIR}${ZFILE} -C $DATA_DIR
 
 gpgconf --kill gpg-agent
-  #read -rsp "Enter passphrase: " PASSPHRASE
+
 if [ "$(ls -A ${DATA_DIR}${file})" ]; then
   echo "Removing Edge files"
   rm -v ${DATA_DIR}${file}/*-edge*.gpg
@@ -52,4 +52,4 @@ else
   echo  "${DATA_DIR}${file} is empty or does not exist"
 fi
 
-rsync -a -v ${DECRYPT_DIR}${file}/{${wildcard}} ${PWD}/sample/$date
+rsync -a -v ${DECRYPT_DIR}${file}/$(wildcard) ${PWD}/sample/$dir

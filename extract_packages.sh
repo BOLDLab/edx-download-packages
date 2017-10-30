@@ -9,7 +9,12 @@ export DATA_DIR=/Volumes/PEGASUS/EdX_Data_ENC/
 export MYSQL_PASSWORD=$db_password
 export DIR=$1
 
-node get_latest_from_aws.js --count 1 --wildcard *NHI*,*MTN*,*SWL*,*HOV*,*SSS*
+if [ -z "$DIR" ]
+then
+  node get_latest_from_aws.js --count 1 --wildcard *NHI*,*MTN*,*SWL*,*HOV*,*SSS*
+else
+  node get_latest_from_aws.js --count 1 --wildcard *NHI*,*MTN*,*SWL*,*HOV*,*SSS* --output $DIR
+fi
 
 echo "Importing course data from: sample/${DIR}"
 python course-progress.py --course 'MTN101x SWL101x NHI101x HOV101x SSS101x' --directory sample/${DIR} --tables 'auth_user auth_userprofile student_courseenrollment student_courseaccessrole user_id_map student_languageproficiency' -D

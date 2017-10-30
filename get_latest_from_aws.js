@@ -23,6 +23,7 @@ if(!process.env.GPG_TTY) {
 let errors = 0;
 let count = 1;
 let wildcard = '*';
+let default_dir = null;
 
 process.argv.forEach((arg, i, a) => {
     if(arg === '-c' || arg === '--count') {
@@ -30,6 +31,9 @@ process.argv.forEach((arg, i, a) => {
     }
     if(arg === '-w' || arg === '--wildcard') {
         wildcard = a[i+1];
+    }
+    if(arg === '-o' || arg === '--output') {
+        default_dir = a[i+1];
     }
 });
 
@@ -65,12 +69,14 @@ const run = (error, stdout, sterr) => {
 
           result.push(record);
 
+          const dir = default_dir ? default_dir : record.date;
+
           console.log(record);
           console.log("Using wildcard: "+wildcard);
           console.log("Fetching and decrypting, this may take a minute...");
 
-          console.log('./newcastleX_download_zip.sh '+record.date+' '+record.name+' '+wildcard);
-          const thread = exec('./newcastleX_download_zip.sh '+record.date+' '+record.name+' '+wildcard, (err, stdout, sterr) => {
+          console.log('./newcastleX_download_zip.sh '+dir+' '+record.name+' '+wildcard);
+          const thread = exec('./newcastleX_download_zip.sh '+dir+' '+record.name+' '+wildcard, (err, stdout, sterr) => {
               if(sterr) {
                   console.error("ERROR downloading files");
                   console.error(sterr);
