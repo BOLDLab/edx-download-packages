@@ -17,7 +17,7 @@ else
 fi
 
 echo "Importing course data from: sample/${DIR}"
-python course-progress.py --course 'MTN101x SWL101x NHI101x HOV101x SSS101x' --directory sample/${DIR} --tables 'auth_user auth_userprofile student_courseenrollment student_courseaccessrole user_id_map student_languageproficiency' -D
+python3 course-progress.py --course 'MTN101x SWL101x NHI101x HOV101x SSS101x' --directory sample/${DIR} --tables 'auth_user auth_userprofile student_courseenrollment student_courseaccessrole user_id_map student_languageproficiency' -D
 
 ./generate_schemas.sh
 
