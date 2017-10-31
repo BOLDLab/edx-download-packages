@@ -31,6 +31,7 @@ fi
 echo "Extracting tarball"
 tar xzf ${DATA_DIR}${ZFILE} -C $DATA_DIR
 
+# only works for gpg > v2.2
 gpgconf --kill gpg-agent
 
 if [ "$(ls -A ${DATA_DIR}${file})" ]; then

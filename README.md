@@ -1,6 +1,10 @@
 # edx-download-packages
 
 ## Requires:
+
+*Tested on: OS X El Capitan and OS X High Sierra*
+*Will need modification for use on other flavours of *nix*
+
 **Node: v8.6.0**
 
 **Python: v3.6.3**
