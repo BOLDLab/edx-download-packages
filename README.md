@@ -2,10 +2,13 @@
 
 ## Requires:
 **Node: v8.6.0**
+
 **Python: v3.6.3**
+
 **GNUpg 2.2.1**
 
 *Tested on: OS X El Capitan and OS X High Sierra*
+
 *May need minor modification for use on other flavours of Unix*
 
 ```
