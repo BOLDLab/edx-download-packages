@@ -2,7 +2,7 @@
 
 dir=$1
 ZFILE=$2
-wildcard=($3)
+wildcard=$3
 file=null
 
 echo "Checking ${DATA_DIR}${ZFILE}"
@@ -53,4 +53,7 @@ else
   echo  "${DATA_DIR}${file} is empty or does not exist"
 fi
 
-rsync -a -v ${DECRYPT_DIR}${file}/$(wildcard) ${PWD}/sample/$dir
+rsync -a -v "${DECRYPT_DIR}${file}/{$wildcard}" "${PWD}/sample/$dir"
+
+echo "Removing decryption files"
+rm -rf $DECRYPT_DIR/**

@@ -48,10 +48,11 @@ const run = (error, stdout, sterr) => {
       fs.writeFileSync('buffer.json', p);
   }
 
-  console.log(a.slice(0, count));
+  console.log("Weeks prior");
+  console.log(a.slice(count-1, count));
 
   const result = [];
-  let c = 0;
+  let c = count - 1;
 
   const iterate = (v) => {
       let a2 = [];
