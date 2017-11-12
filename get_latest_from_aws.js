@@ -1,6 +1,7 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 const path = require('path');
+const debug = require('debug')('latest_aws');
 
 if(!process.env.DATA_DIR) {
   console.error("DATA DIR env variable not set");
@@ -26,7 +27,7 @@ let wildcard = '*';
 let default_dir = null;
 
 process.argv.forEach((arg, i, a) => {
-    if(arg === '-c' || arg === '--count') {
+    if(arg === '-c' || arg === '--count-weeks-prior') {
         count = a[i+1];
     }
     if(arg === '-w' || arg === '--wildcard') {
@@ -40,19 +41,23 @@ process.argv.forEach((arg, i, a) => {
 const run = (error, stdout, sterr) => {
   console.log("Processing these files");
 
-  if(!fs.existsSync('./buffer.json')) {
+  if(!fs.existsSync(process.env.EDI_BASE_DIR+'edx-download-packages/buffer.json')) {
       a = stdout.split('\n');
       a.sort().reverse();
 
       const p = JSON.stringify(a);
-      fs.writeFileSync('buffer.json', p);
+      fs.writeFileSync(process.env.EDI_BASE_DIR+'edx-download-packages/buffer.json', p);
   }
 
   console.log("Weeks prior");
-  console.log(a.slice(count-1, count));
+  if(count > 0) {
+      console.log(a.slice(count-1, count));
+  } else {
+      console.log(a[0]);
+  }
 
   const result = [];
-  let c = count - 1;
+  let c = count;
 
   const iterate = (v) => {
       let a2 = [];
@@ -76,8 +81,8 @@ const run = (error, stdout, sterr) => {
           console.log("Using wildcard: "+wildcard);
           console.log("Fetching and decrypting, this may take a minute...");
 
-          console.log('./newcastleX_download_zip.sh '+dir+' '+record.name+' '+wildcard);
-          const thread = exec('./newcastleX_download_zip.sh '+dir+' '+record.name+' '+wildcard, (err, stdout, sterr) => {
+          console.log(process.env.EDI_BASE_DIR+'edx-download-packages/newcastleX_download_zip.sh '+dir+' '+record.name+' '+wildcard);
+          const thread = exec(process.env.EDI_BASE_DIR+'edx-download-packages/newcastleX_download_zip.sh '+dir+' '+record.name+' '+wildcard, (err, stdout, sterr) => {
               if(sterr) {
                   console.error("ERROR downloading files");
                   console.error(sterr);
@@ -102,7 +107,7 @@ const run = (error, stdout, sterr) => {
 
           thread.on('close', (code) => {
               console.log(`child process exited with code ${code}`);
-              if(c == count-1)
+              if(c == count)
                 return;
               else
                 iterate(a[++c]);
@@ -113,11 +118,27 @@ const run = (error, stdout, sterr) => {
   iterate(a[c]);
 };
 
-if(fs.existsSync('./buffer.json')) {
+const has_buffer = fs.existsSync(process.env.EDI_BASE_DIR+'edx-download-packages/buffer.json');
+
+let diff = 0;
+  if(has_buffer) {
+      const s = fs.readFileSync(process.env.EDI_BASE_DIR+'edx-download-packages/buffer.json');
+      a = JSON.parse(s);
+
+      const stats = fs.statSync(process.env.EDI_BASE_DIR+'edx-download-packages/buffer.json',
+        (err, stats) => {
+            if(err) { debug(err); }
+      });
+
+      diff = new Date().getTime() - new Date(stats.ctime).getTime();
+  }
+
+  const days = has_buffer ? Math.floor(diff/1000/60/60/24) : 0;
+
+  if(days < 7) {
     console.log("Starting from buffer, no AWS query required");
-    const s = fs.readFileSync('./buffer.json');
-    a = JSON.parse(s);
     run();
-} else {
+  } else {
+    console.log("Downloading latest data file from EdX");
     exec('aws s3 ls course-data | grep newcastle', run);
-}
+  }

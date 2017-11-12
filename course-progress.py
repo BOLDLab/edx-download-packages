@@ -71,7 +71,7 @@ def main():
 
 			tokens = name.split('.')
 
-			cleanFile = 'clean/'+tokens[0]
+			cleanFile = os.environ['EDI_BASE_DIR']+'edx-download-packages/clean/'+tokens[0]
 
 			fout = open(fileName, "rt")
 			out_csv = csv.writer(open(cleanFile, 'wt'))
@@ -82,9 +82,8 @@ def main():
 			fout.close()
 			fin.close()
 
-		#	output = fileName+".db"
-
 			process = "tables -i %s --db=sqlite://./%s" % (cleanFile, "newcastlex_research.db")
+			print (process)
 
 			lp = process.split(' ');
 

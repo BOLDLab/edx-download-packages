@@ -2,7 +2,11 @@ sample/
 env/
 clean/
 models/
-model_schemas/sqlite/**
+model_schemas/
+sandbox/
+
+# shell run file
+run
 
 .tern-project
 *.csv

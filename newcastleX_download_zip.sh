@@ -5,8 +5,9 @@ ZFILE=$2
 wildcard=$3
 file=null
 
-echo "Checking ${DATA_DIR}${ZFILE}"
+stringContain() { [ -z "${2##*$1*}" ]; }
 
+echo "Checking ${DATA_DIR}${ZFILE}"
 if [ -f ${DATA_DIR}${ZFILE} ]; then
     echo "File $ZFILE already downloaded.."
 else
@@ -22,13 +23,20 @@ else
     mkdir -p ${DECRYPT_DIR}${file}
 fi
 
-if [ -d sample/${dir} ]; then
+if [ -d ${EDI_BASE_DIR}edx-download-packages/sample ]; then
     echo "Sample folder exists"
 else
-    mkdir -p sample/${dir}
+    mkdir -p ${EDI_BASE_DIR}edx-download-packages/sample
+fi
+
+if [ -d ${EDI_BASE_DIR}edx-download-packages/sample/$dir ]; then
+    echo "$dir exists"
+else
+    mkdir -p ${EDI_BASE_DIR}edx-download-packages/sample/$dir
 fi
 
 echo "Extracting tarball"
+mkdir $DATA_DIR/tmp
 tar xzf ${DATA_DIR}${ZFILE} -C $DATA_DIR
 
 # only works for gpg > v2.2
@@ -47,13 +55,12 @@ if [ "$(ls -A ${DATA_DIR}${file})" ]; then
       echo "  gpg --no --batch --output ${DECRYPT_DIR}${file}/$output --decrypt $FILE";
 
       gpg --no --batch --output ${DECRYPT_DIR}${file}/$output --decrypt $FILE
+
+      cp -v "${DECRYPT_DIR}${file}/$output" "${EDI_BASE_DIR}edx-download-packages/sample/$dir/"
   done
 
 else
   echo  "${DATA_DIR}${file} is empty or does not exist"
 fi
 
-rsync -a -v "${DECRYPT_DIR}${file}/{$wildcard}" "${PWD}/sample/$dir"
-
-echo "Removing decryption files"
-rm -rf $DECRYPT_DIR/**
+#echo "cp -v ${DECRYPT_DIR}${file}/{$wildcard} ${EDI_BASE_DIR}edx-download-packages/sample/$dir"

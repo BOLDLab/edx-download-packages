@@ -1,7 +1,7 @@
 const fs = require('fs');
-const model_dir = './models/';
-const mysql_model_schemas = "./model_schemas/mysql";
-const sqlite_model_schemas = "./model_schemas/sqlite";
+const model_dir = process.env.EDI_BASE_DIR+'edx-download-packages/models/';
+const mysql_model_schemas = process.env.EDI_BASE_DIR+'edx-download-packages/model_schemas/mysql';
+const sqlite_model_schemas = process.env.EDI_BASE_DIR+'edx-download-packages/model_schemas/sqlite';
 
 /*
   Extracts schemas for mysql and sqlite DBs.
@@ -11,10 +11,6 @@ const sqlite_model_schemas = "./model_schemas/sqlite";
   See McGillx Docs:
   http://mcgillx-research-documentation.readthedocs.io/en/latest/rstfiles/edx_relational_db_migration.html#constructing-the-db
 */
-
-function write_file(f, c, t) {
-  fs.renameSync('./models/'+f, './'+c+'/'+t);
-}
 
 fs.readdir(model_dir,
   (err, files) => {
@@ -36,7 +32,7 @@ fs.readdir(model_dir,
           const sqlite_model_name = b[0]+".js";
 
           fs.mkdir(model_dir, () => { /*silent*/ });
-          fs.mkdir('./model_schemas', () => { /*silent*/ });
+          fs.mkdir(process.env.EDI_BASE_DIR+'edx-download-packages/model_schemas', () => { /*silent*/ });
           fs.mkdir(mysql_model_schemas, () => { /*silent*/  });
           fs.mkdir(sqlite_model_schemas, () => { /*silent*/  });
 

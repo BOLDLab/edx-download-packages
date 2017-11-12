@@ -6,18 +6,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.INTEGER,
       allowNull: true,
       primaryKey: true
-    },
-    hash_id: {
-      type: DataTypes.STRING(64),
-      allowNull: true
-    },
-    id: {
-      type: DataTypes.STRING(16),
-      allowNull: true
-    },
-    username: {
-      type: DataTypes.STRING(48),
-      allowNull: true
     }
   }, {
     tableName: 'newcastlex_swl101x_1t2017_user_id_map_prod',
